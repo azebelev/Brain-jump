@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { UserRole } from 'src/enums/userRole';
 import { BeforeInsert, Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { BasePkEntity } from './abstract/basePk.entity';
 import { Challenge } from './challenge.entity';
@@ -13,6 +14,9 @@ export class User extends BasePkEntity {
 
   @Column({ nullable: false })
   password: string;
+
+  @Column({ default: UserRole.User })
+  role: UserRole;
 
   @BeforeInsert()
   async hashPassword() {

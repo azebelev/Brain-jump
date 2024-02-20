@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Challenge } from 'src/persistence/entities/challenge.entity';
 import { User } from 'src/persistence/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,6 +12,10 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
+  async findOneByEmail(email: string) {
+    return await this.userRepo.findOne({ where: { email } });
+  }
+
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepo.create(createUserDto);
     await this.userRepo.save(user);
@@ -19,18 +24,18 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepo.find();
+    return this.userRepo.find({relations:{challenges:true}});
   }
 
   findOne(id: number) {
-    return this.userRepo.findOne({where:{id}});
+    return this.userRepo.findOne({ where: { id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepo.update(id,updateUserDto);
+    return this.userRepo.update(id, updateUserDto);
   }
 
   remove(id: number) {
-    return this.userRepo.delete({id});
+    return this.userRepo.delete({ id });
   }
 }

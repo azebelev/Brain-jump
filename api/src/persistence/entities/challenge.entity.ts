@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BasePkEntity } from './abstract/basePk.entity';
 import { Attachment } from './attachment.entity';
 import { ChallengeComment } from './challengeComment.entity';
@@ -21,6 +21,7 @@ export class Challenge extends BasePkEntity {
     (type) => ChallengeGroup,
     (challengeGroup) => challengeGroup.challenges,
   )
+  @JoinColumn({ name: 'challengeGroupId' })
   challengeGroup: ChallengeGroup;
 
   @ManyToOne((type) => User, (user) => user.challenges)
@@ -32,6 +33,6 @@ export class Challenge extends BasePkEntity {
   )
   comments: ChallengeComment[];
 
-  @OneToOne((type) => Attachment, (attachment) => attachment.challenge)
-  attachment: Attachment;
+  @OneToMany((type) => Attachment, (attachment) => attachment.challenge)
+  attachment: Attachment[];
 }

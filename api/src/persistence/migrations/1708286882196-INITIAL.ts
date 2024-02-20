@@ -13,7 +13,7 @@ export class INITIAL1708286882196 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "challenge_comment" ADD CONSTRAINT "FK_e47a4b401db89828dcc228c37fe" FOREIGN KEY ("challengeId") REFERENCES "challenge"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "challenge" ADD CONSTRAINT "FK_eb5e74fb53903f536541aa44fad" FOREIGN KEY ("challengeGroupId") REFERENCES "challenge_group"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "challenge" ADD CONSTRAINT "FK_054c35ac0dc91e24bd1be24ee74" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await seedUsers(queryRunner);
+        //await seedUsers(queryRunner);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

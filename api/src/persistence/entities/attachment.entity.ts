@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
 import { BasePkEntity } from './abstract/basePk.entity';
 import { Challenge } from './challenge.entity';
 
@@ -11,6 +11,6 @@ export class Attachment extends BasePkEntity {
   file: string;
 
   //Links
-  @OneToOne((type) => Challenge, (challenge) => challenge.attachment)
+  @ManyToOne((type) => Challenge, (challenge) => challenge.attachment,{onDelete:'CASCADE'})
   challenge: Challenge;
 }

@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { getDbConfig } from './config/db.config';
 import { ChallengesModule } from './domains/challenges/challenges.module';
 import { UserModule } from './domains/user/user.module';
+import { ChallengeGroupModule } from './domains/challenge-group/challenge-group.module';
 
 @Module({
   imports: [
@@ -14,11 +15,12 @@ import { UserModule } from './domains/user/user.module';
     AuthModule,
     UserModule,
     ChallengesModule,
+    ChallengeGroupModule,
     TypeOrmModule.forRootAsync({
       imports:[ConfigModule],
       inject:[ConfigService],
       useFactory:getDbConfig
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
