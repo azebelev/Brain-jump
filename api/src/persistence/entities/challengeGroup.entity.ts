@@ -5,6 +5,7 @@ import { Challenge } from './challenge.entity';
 @Entity()
 @Tree('closure-table')
 export class ChallengeGroup extends BasePkEntity {
+  
   @Column({ nullable: false })
   title: string;
 

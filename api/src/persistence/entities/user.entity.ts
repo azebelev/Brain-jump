@@ -25,6 +25,5 @@ export class User extends BasePkEntity {
 
   //Links
   @OneToMany((type) => Challenge, (challenge) => challenge.author)
-  @JoinColumn()
   challenges: Challenge[];
 }

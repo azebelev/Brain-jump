@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, Tree, TreeChildren, TreeParent } from 'typeorm';
 import { BasePkEntity } from './abstract/basePk.entity';
 import { Attachment } from './attachment.entity';
 import { ChallengeComment } from './challengeComment.entity';
@@ -6,25 +6,43 @@ import { ChallengeGroup } from './challengeGroup.entity';
 import { User } from './user.entity';
 
 @Entity()
+@Tree('closure-table')
 export class Challenge extends BasePkEntity {
-  @Column()
+  @Column({ nullable: false })
   title: string;
 
+  @Column({nullable:true})
+  tags?: string;
+
   @Column()
-  tags: string;
+  description?: string;
 
   @Column({ nullable: false })
-  description: string;
+  authorId: number;
+
+  @Column({nullable:true})
+  parentId:number;
+
+  @Column({nullable:true})
+  challengeGroupId?:number;
 
   //Links
+  @TreeChildren()
+  children:Challenge[];
+
+  @TreeParent()
+  parent:Challenge;
+
   @ManyToOne(
     (type) => ChallengeGroup,
     (challengeGroup) => challengeGroup.challenges,
+    { nullable: false },
   )
   @JoinColumn({ name: 'challengeGroupId' })
   challengeGroup: ChallengeGroup;
 
   @ManyToOne((type) => User, (user) => user.challenges)
+  @JoinColumn({ name: 'authorId'})
   author: User;
 
   @OneToMany(

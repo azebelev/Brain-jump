@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Challenge } from 'src/persistence/entities/challenge.entity';
+import { ChallengeClosure } from 'src/persistence/entities/challengeClosure.entity';
 import { User } from 'src/persistence/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,7 +25,7 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepo.find({relations:{challenges:true}});
+    return this.userRepo.find({ relations: { challenges: true } });
   }
 
   findOne(id: number) {
@@ -35,7 +36,30 @@ export class UserService {
     return this.userRepo.update(id, updateUserDto);
   }
 
-  remove(id: number) {
-    return this.userRepo.delete({ id });
+  async remove(id: number) {
+    return await this.userRepo.manager.transaction(async (manager) => {
+      const userRepo = manager.getRepository(User);
+      const challengeRepo = manager.getRepository(Challenge);
+      const challengeClosureRepo = manager.getRepository(ChallengeClosure);
+
+      const user = await userRepo.findOne({
+        where: { id },
+        relations: { challenges: true },
+      });
+      if (!user) return { affected: 0 };
+      if (user.challenges.length) {
+        const challengeIds = user.challenges.map((c) => c.id);
+        await challengeClosureRepo
+          .createQueryBuilder()
+          .delete()
+          .where('id_ancestor IN (:...ids) OR id_descendant IN (:...ids)', {
+            ids: challengeIds,
+          })
+          .execute();
+        await challengeRepo.delete(challengeIds);
+      }
+
+      return await userRepo.delete(id);
+    });
   }
 }

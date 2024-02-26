@@ -6,6 +6,8 @@ import { ChallengeComment } from 'src/persistence/entities/challengeComment.enti
 import { ChallengeGroup } from 'src/persistence/entities/challengeGroup.entity';
 import { User } from 'src/persistence/entities/user.entity';
 import { DataSource } from 'typeorm';
+import { ChallengeClosure } from './entities/challengeClosure.entity';
+import { ChallengeGroupClosure } from './entities/challengeGroupClosure.entity';
 config();
 
 const configService = new ConfigService();
@@ -16,7 +18,7 @@ export default new DataSource({
   options: {
     encrypt: false,
   },
-  entities: [User, Challenge, ChallengeComment, ChallengeGroup, Attachment],
+  entities: [User, Challenge, ChallengeClosure, ChallengeComment,ChallengeGroupClosure, ChallengeGroup, Attachment],
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
 });
